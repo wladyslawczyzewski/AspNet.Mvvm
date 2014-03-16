@@ -1,19 +1,18 @@
-﻿using System.Web.Mvc;
+﻿using System.IO;
+using System.Web.Mvc;
 
 namespace AspNet.Mvvm
 {
     public class MvvmController : Controller
     {
-        [HttpGet]
-        public virtual JsonResult Get(params object[] data)
+        new public FileResult View(string viewName)
         {
-            return new JsonResult();
-        }
+            if (!viewName.EndsWith(".html"))
+            {
+                viewName += ".html";
+            }
 
-        [HttpPost]
-        public virtual JsonResult Post(params object[] data)
-        {
-            return new JsonResult();
+            return File(Path.Combine(Server.MapPath("~/Views/"), viewName), "text/html");
         }
     }
 }

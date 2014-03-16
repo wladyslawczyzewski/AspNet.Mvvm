@@ -1,6 +1,5 @@
-﻿using System.Web.Routing;
-using System.Web.Mvc;
-using System;
+﻿using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace AspNet.Mvvm
 {
@@ -23,6 +22,8 @@ namespace AspNet.Mvvm
             set
             {
                 routes = value;
+
+                MapDefaultRoutes();
             }
         }
         #endregion
@@ -34,25 +35,34 @@ namespace AspNet.Mvvm
         }
         #endregion
 
-        #region Public Methods
-        public void MapRoute(string templateUrl, string controllerName)
+        #region Private Methods
+        private void MapDefaultRoutes()
         {
-            if (routes == null)
-            {
-                throw new NullReferenceException();
-            }
-
             routes.MapRoute(
-                name: controllerName,
-                url: templateUrl.TrimStart(new[] { '/' }),
-                defaults: new { controller = controllerName, action = "Get" },
+                name: "MvvmDefault",
+                url: "",
+                defaults: new { controller = "Mvvm", action = "View", viewName = "index" },
                 constraints: new { httpMethod = new HttpMethodConstraint("GET") }
             );
 
             routes.MapRoute(
-                name: controllerName,
-                url: templateUrl.TrimStart(new[] { '/' }),
-                defaults: new { controller = controllerName, action = "Post" },
+                name: "MvvmView",
+                url: "view/{viewName}",
+                defaults: new { controller = "Mvvm", action = "View", viewName = UrlParameter.Optional },
+                constraints: new { httpMethod = new HttpMethodConstraint("GET") }
+            );
+
+            routes.MapRoute(
+                name: "MvvmControllerGet",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Mvvm", action = "Get" },
+                constraints: new { httpMethod = new HttpMethodConstraint("GET") }
+            );
+
+            routes.MapRoute(
+                name: "MvvmControllerPost",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Mvvm", action = "Post" },
                 constraints: new { httpMethod = new HttpMethodConstraint("POST") }
             );
         }
